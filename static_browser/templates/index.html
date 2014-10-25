@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block page_title %}Home{% endblock %}
+{% block page_heading %}Resources for Tool Labs{% endblock %}
+
+{% block page_content %}
+<p><tt>static</tt> hosts resources like CSS and JavaScript frameworks, fonts and
+  icons for the use on Tool Labs.  If you are missing something, feel free to
+  create a pull request on <a href="https://github.com/tool-labs/static/"
+  title="tool-labs/static on GitHub">GitHub</a>.</p>
+
+<h2>Libraries</h2>
+{% if not packages %}
+  <p>At the moment no libraries are available.  This is probably an error.  If
+    this does not change within the next minutes, please open an issue on
+    GitHub.</p>
+{% else %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Library</th>
+      <th>Version</th>
+      <th>Main files</th>
+      <th>License</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for (name, package_content) in packages | dictsort %}
+  {% for (version, version_content) in package_content | dictsort %}
+    {% set title = version_content['title'] %}
+    {% set license = version_content['license'] %}
+    {% set license_file = version_content['license-file'] %}
+    {% set files = version_content['files'] %}
+    <tr>
+      {% if loop.first %}
+      <td rowspan="{{ package_content.keys() | length}}"><a
+        href="{{ tools_static(name) }}">{{ title }}</a></td>
+      {% endif %}
+      <td><a href="{{ tools_static(name, version ) }}">{{ version }}</a></td>
+      <td>
+      {% for file in files | sort %}
+        <a href="{{ tools_static(name, version, file) }}"
+          class="resource">{{ file }}</a>{% if not loop.last %}, {% endif %}
+      {% endfor %}
+      </td>
+      <td><a href="{{ tools_static(name, version, license_file) }}"
+        title="License file">{{ license }}</a></td>
+    </tr>
+  {% endfor %}
+  {% endfor %}
+  <tobdy>
+</table>
+{% endif %}
+{% endblock %}

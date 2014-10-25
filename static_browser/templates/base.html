@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block page_title %}{% endblock %} | static | Wikimedia Tool Labs</title>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="{{ tools_static('bootstrap', '3.1.1', 'css/bootstrap.min.css') }}" />
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/portal.css') }}" />
+</head>
+<body>
+	<a href="https://github.com/tool-labs/static"><img class="fork-me" src="//tools.wmflabs.org/static/res/logos/forkme_right_darkblue.png" alt="Fork me on GitHub" /></a>
+	<div class="container">
+		<div class="page-header">
+			<h1>{% block page_heading %}{% endblock %}</h1>
+		</div>
+		{% block page_content %}{% endblock %}
+	</div><!-- /.container -->
+
+{% block page_bottom %}{% endblock %}
+<script src="{{ tools_static('jquery', '1.11.0', 'jquery.min.js') }}"></script>
+<script src="{{ tools_static('bootstrap', '3.1.1', 'js/bootstrap.min.js') }}"></script>
+<script src="{{ tools_static('zeroclipboard', '2.1.5', 'ZeroClipboard.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/portal.js') }}"></script>
+</body>
+</html>

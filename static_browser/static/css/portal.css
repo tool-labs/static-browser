@@ -1,0 +1,16 @@
+/* Banner */
+
+.fork-me {
+    float: right;
+}
+
+/* Package table */
+.resource {
+  font-family: 'Source Code Pro', 'DejaVu Sans Mono', 'Consolas', monospace;
+}
+/* Clipboard */
+
+.tooltip {
+    /* Display atop the modal */
+    z-index: 2000;
+}
