@@ -8,7 +8,7 @@ app.config.from_envvar('STATIC_BROWSER_SETTINGS')
 
 @app.before_request
 def before_request():
-    flask.g.parser = static_browser.parser.PackageParser(app.config.STATIC_PATH)
+    flask.g.parser = static_browser.parser.PackageParser(app.config['STATIC_PATH'])
 
 @app.context_processor
 def context_processor_tools_static():
