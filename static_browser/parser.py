@@ -84,3 +84,27 @@ class PackageParser:
                 else:
                     self.logger.debug(' * Invalid description for {0}/{1}'.format(package, version))
         return result
+
+    def validate(self):
+        success = True
+        packages = self.get_packages()
+        for package in packages:
+            package_description = self.parse_description(package)
+            versions = self.get_versions(package)
+            for version in versions:
+                version_description = self.parse_description(package, version)
+                path = os.path.join(os.path.join(self.path, package), version)
+                for key, value in package_description.iteritems():
+                    version_description.setdefault(key, value)
+                if not self.validate_description(version_description):
+                    print "{0}/{1}: description invalid".format(package, version)
+                    success = False
+                else:
+                    if not os.path.isfile(os.path.join(path, version_description['license-file'])):
+                        print "{0}/{1}: license file does not exist".format(package, version)
+                        success = False
+                    for file in version_description['files']:
+                        if not os.path.isfile(os.path.join(path, file)):
+                            print "{0}/{1}: referenced file does not exist: {2}".format(package, version, file)
+                            success = False
+        return success
