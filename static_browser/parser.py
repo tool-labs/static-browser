@@ -1,9 +1,12 @@
 # coding=utf-8
 
+import datetime
 import json
 import logging
 import os
 import os.path
+import re
+import sets
 
 class PackageParser:
     DESCRIPTION_FILE = 'index.json'
@@ -108,3 +111,36 @@ class PackageParser:
                             print "{0}/{1}: referenced file does not exist: {2}".format(package, version, file)
                             success = False
         return success
+
+class AccessLogParser:
+    ACCESS_LOG_PATTERN = re.compile(r'\d+\.\d+.\d+.\d+ [^ ]+ - \[([^\]]+)\] "GET /static/res/([^/]+)/([^/]+)/[^ ]+ [^"]+" \d+ \d+ "https?://tools.wmflabs.org/([^/]+)/[^"]*" ".*')
+    DATE_FORMAT = '%d/%b/%Y:%H:%M:%S +0000'
+
+    def __init__(self, file):
+        self.file = file
+        self.pivot_date = datetime.datetime.now() + datetime.timedelta(days=-30)
+
+    def parse(self):
+        usage = dict()
+        with open(self.file) as f:
+            for line in f:
+                result = self.parse_line(line)
+                if result is not None:
+                    (package, version, tool) = result
+                    if not package in usage:
+                        usage[package] = dict()
+                    if not version in usage[package]:
+                        usage[package][version] = dict()
+                    if not tool in usage[package][version]:
+                        usage[package][version][tool] = 0
+                    usage[package][version][tool] += 1
+        return usage
+
+    def parse_line(self, line):
+        match = AccessLogParser.ACCESS_LOG_PATTERN.match(line)
+        if match:
+            (date_string, package, version, tool) = match.groups()
+            date = datetime.datetime.strptime(date_string, AccessLogParser.DATE_FORMAT)
+            if date > self.pivot_date:
+                return (package, version, tool)
+        return None
