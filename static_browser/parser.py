@@ -52,7 +52,8 @@ class PackageParser:
         for item in os.listdir(directory):
             item_path = os.path.join(directory, item)
             if os.path.isfile(item_path):
-                files.append(basepath + item)
+                if not basepath + item == 'index.json':
+                    files.append(basepath + item)
             elif os.path.isdir(item_path):
                 for file in self.get_all_files_in_dir(item_path, item + '/'):
                     files.append(file)
@@ -178,6 +179,6 @@ class AccessLogParser:
         if match:
             (date_string, package, version, tool) = match.groups()
             date = datetime.datetime.strptime(date_string, AccessLogParser.DATE_FORMAT)
-            if not tool is 'static' and date > self.pivot_date:
+            if not tool == 'static' and date > self.pivot_date:
                 return (package, version, tool)
         return None

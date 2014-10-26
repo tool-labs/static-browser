@@ -10,13 +10,8 @@
   <li class="active">{{ package['version'] }}</li>
 </ol>
 
-{% if description in package %}
-  <p>{{ package['description'] }}</p>
-{% else %}
-  <p>No description available for this package.</p>
-{% endif %}
-
-<p>License: <a href="{{ tools_static(package['name'], package['version'], package['license-file']) }}">{{ package['license'] }}</a>.</p>
+{% import '_package.html' as package_utils %}
+{{ package_utils.print_package(package, tools_static) }}
 
 <div class="row">
   <div class="col-md-6">

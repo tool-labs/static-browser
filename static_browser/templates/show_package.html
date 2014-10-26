@@ -9,16 +9,7 @@
   <li class="active">{{ package['title'] }}</li>
 </ol>
 
-{% if description in package %}
-  <p>{{ package['description'] }}</p>
-{% else %}
-  <p>No description available for this package.</p>
-{% endif %}
+{% import '_package.html' as package_utils %}
+{{ package_utils.print_package(package, tools_static) }}
 
-<h4>Available versions</h4>
-<ul>
-  {% for version in package['versions']: %}
-    <li><a href="{{ url_for('show_version', package=package['name'], version=version) }}">{{ version }}</a></li>
-  {% endfor %}
-</ul>
 {% endblock %}

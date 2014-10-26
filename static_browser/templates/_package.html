@@ -1,0 +1,38 @@
+{% macro print_package(package, tools_static) -%}
+<table class="table">
+  <tr>
+    <th>Description</th>
+    <td>
+    {% if 'description' in package %}
+      {{ package['description'] }}
+    {% else %}
+      No description available for this package.
+    {% endif %}
+    </td>
+  </tr>
+  {% if 'license' in package and 'license-file' in package %}
+  <tr>
+    <th>License</th>
+    <td><a href="{{ tools_static(package['name'], package['version'], package['license-file']) }}">{{ package['license'] }}</a></td>
+  </tr>
+  {% endif %}
+  {% if 'homepage' in package %}
+  <tr>
+    <th>More information</th>
+    <td><a href="{{ package['homepage'] }}">Homepage</a></td>
+  </tr>
+  {% endif %}
+  {% if 'versions' in package %}
+  <tr>
+    <th>Versions</th>
+    <td>
+      <ul>
+      {% for version in package['versions'] %}
+        <li><a href="{{ url_for('show_version', package=package['name'], version=version) }}">{{ version }}</a>
+      {% endfor %}
+      </ul>
+    </td>
+  </tr>
+  {% endif %}
+</table>
+{%- endmacro %}
