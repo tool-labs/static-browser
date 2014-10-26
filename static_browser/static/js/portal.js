@@ -1,11 +1,14 @@
 /*global ZeroClipboard */
 
 $(function () {
-	$('#resources').on('click', '.resource', function (e) {
+	$('.package').on('click', '.resource', function (e) {
 		var $el = $(this),
-			// Promote protocol-relative urls
-			url = this.href.replace(/^https?:/, ''),
-			filename = $(this).text(),
+		  parent_package = $(this).parents('.package'),
+			package_name = parent_package.data('package'),
+			package_title = parent_package.data('package-title'),
+			package_version = parent_package.data('version'),
+			filename = $(this).data('resource'),
+			url = '//tools.wmflabs.org/static/res/' + package_name + '/' + package_version + '/' + filename,
 			snippet;
 
 		if (url.slice(-4) === '.css') {
@@ -17,7 +20,13 @@ $(function () {
 		}
 
 		$('#resource-modal')
-			.find('.resource-modal-label')
+			.find('.resource-modal-package')
+				.text(package_title)
+				.end()
+			.find('.resource-modal-version')
+				.text(package_version)
+				.end()
+			.find('.resource-modal-file')
 				.text(filename)
 				.end()
 			.find('.resource-modal-snippet')
@@ -43,7 +52,7 @@ $(function () {
 	});
 
 	ZeroClipboard.config({
-		swfPath: './res/zeroclipboard/2.1.5/ZeroClipboard.swf',
+		swfPath: '/static/res/zeroclipboard/2.1.5/ZeroClipboard.swf',
 		hoverClass: 'btn-clipboard-hover'
 	});
 

@@ -36,10 +36,9 @@
       <td rowspan="{{ package_content.keys() | length}}"><a href="{{ url_for('show_package', package=name) }}">{{ title }}</a></td>
       {% endif %}
       <td><a href="{{ url_for('show_version', package=name, version=version) }}">{{ version }}</a></td>
-      <td>
+      <td class="package" data-package="{{ name }}" data-version="{{ version }}" data-package-title="{{ title }}">
       {% for file in files | sort %}
-        <a href="{{ tools_static(name, version, file) }}"
-          class="resource">{{ file }}</a>{% if not loop.last %}, {% endif %}
+        <a href="{{ tools_static(name, version, file) }}" class="resource" data-resource="{{ file }}">{{ file }}</a>{% if not loop.last %}, {% endif %}
       {% endfor %}
       </td>
       <td><a href="{{ tools_static(name, version, license_file) }}"
@@ -50,4 +49,9 @@
   <tobdy>
 </table>
 {% endif %}
+{% endblock %}
+
+{% block page_bottom %}
+{% import '_package.html' as package_utils %}
+{{ package_utils.print_resource_dialog() }}
 {% endblock %}

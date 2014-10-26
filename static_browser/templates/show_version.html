@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import '_package.html' as package_utils %}
 
 {% block page_title %}{{ package['title'] }} {{ package['version'] }}{% endblock %}
 {% block page_heading %}Package {{ package['title'] }} {{ package['version'] }}{% endblock %}
@@ -10,15 +11,14 @@
   <li class="active">{{ package['version'] }}</li>
 </ol>
 
-{% import '_package.html' as package_utils %}
 {{ package_utils.print_package(package, tools_static) }}
 
 <div class="row">
   <div class="col-md-6">
     <h4>Available files</h4>
-    <ul>
+    <ul class="package" data-package="{{ package['name'] }}" data-package-title="{{ package['title'] }}" data-version="{{ package['version'] }}">
       {% for file in all_files | sort %}
-      <li><a href="{{ tools_static(package['name'], package['version'], file) }}" class="resource{% if file in package['files'] %} resource-main{% endif %}">{{ file }}</a></li>
+      <li><a href="{{ tools_static(package['name'], package['version'], file) }}" class="resource{% if file in package['files'] %} resource-main{% endif %}" data-resource="{{ file }}">{{ file }}</a></li>
       {% endfor %}
     </ul>
   </div>
@@ -36,4 +36,8 @@
     {% endif %}
   </div>
 </div>
+{% endblock %}
+
+{% block page_bottom %}
+{{ package_utils.print_resource_dialog() }}
 {% endblock %}

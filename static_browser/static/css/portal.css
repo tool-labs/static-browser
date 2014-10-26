@@ -6,7 +6,8 @@
 
 /* Monospace */
 .resource,
-.package-usage li {
+.package-usage li,
+.resource-modal-file {
   font-family: 'Source Code Pro', 'DejaVu Sans Mono', 'Consolas', monospace;
 }
 
