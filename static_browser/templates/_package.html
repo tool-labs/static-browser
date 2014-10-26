@@ -1,4 +1,23 @@
-{% macro print_package(package, tools_static) -%}
+{% macro print_package_data(package) -%}
+data-package="{{ package['name'] }}" data-version="{{ package['version'] }}" data-package-title="{{ package['title'] }}"
+{%- endmacro %}
+
+{% macro print_files(package, tools_static) -%}
+{% for file in package['files'] | sort %}
+  <a href="{{ tools_static(package['name'], package['version'], file) }}" class="resource resource-file" data-resource="{{ file }}">{{ file }}</a>{% if not loop.last %}, {% endif %}
+{% endfor %}
+{%- endmacro %}
+
+{% macro print_fonts(package, tools_static) -%}
+{% for (font, files) in package['fonts'] | dictsort %}
+  <span class="resource-font" data-font-name="{{ font }}">{{ font }}:
+  {% for (type, file) in files | dictsort %}
+    <a href="{{ tools_static(package['name'], package['version'], file) }}" class="resource resource-font-file" data-font-type="{{ type }}" data-resource="{{ file }}">{{ type }}</a>{% if not loop.last %}, {% endif %}
+  {% endfor %}</span>{% if not loop.last %}; {% endif %}
+{% endfor %}
+{%- endmacro %}
+
+{% macro print_package(package, tools_static, versions=None) -%}
 <table class="table">
   <tr>
     <th>Description</th>
@@ -22,15 +41,31 @@
     <td><a href="{{ package['homepage'] }}">Homepage</a></td>
   </tr>
   {% endif %}
-  {% if 'versions' in package %}
+  {% if versions %}
   <tr>
     <th>Versions</th>
     <td>
       <ul>
-      {% for version in package['versions'] %}
-        <li><a href="{{ url_for('show_version', package=package['name'], version=version) }}">{{ version }}</a>
+      {% for version in versions %}
+        <li><a href="{{ url_for('show_package_version', package=package['name'], version=version) }}">{{ version }}</a>
       {% endfor %}
       </ul>
+    </td>
+  </tr>
+  {% endif %}
+  {% if 'files' in package %}
+  <tr>
+    <th>Main files</th>
+    <td class="package" {{ print_package_data(package) }}>
+      {{ print_files(package, tools_static) }}
+    </td>
+  </tr>
+  {% endif %}
+  {% if 'fonts' in package %}
+  <tr>
+    <th>Fonts</th>
+    <td class="package" {{ print_package_data(package) }}>
+      {{ print_fonts(package, tools_static) }}
     </td>
   </tr>
   {% endif %}

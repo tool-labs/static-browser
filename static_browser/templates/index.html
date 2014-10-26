@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% import '_package.html' as package_utils %}
 
 {% block page_title %}Home{% endblock %}
 {% block page_heading %}Resources for Tool Labs{% endblock %}
@@ -10,7 +11,7 @@
   title="tool-labs/static on GitHub">GitHub</a>.</p>
 
 <h2>Libraries</h2>
-{% if not packages %}
+{% if not libraries %}
   <p>At the moment no libraries are available.  This is probably an error.  If
     this does not change within the next minutes, please open an issue on
     GitHub.</p>
@@ -25,7 +26,7 @@
     </tr>
   </thead>
   <tbody>
-  {% for (name, package_content) in packages | dictsort %}
+  {% for (name, package_content) in libraries | dictsort %}
   {% for (version, version_content) in package_content | dictsort %}
     {% set title = version_content['title'] %}
     {% set license = version_content['license'] %}
@@ -35,11 +36,48 @@
       {% if loop.first %}
       <td rowspan="{{ package_content.keys() | length}}"><a href="{{ url_for('show_package', package=name) }}">{{ title }}</a></td>
       {% endif %}
-      <td><a href="{{ url_for('show_version', package=name, version=version) }}">{{ version }}</a></td>
-      <td class="package" data-package="{{ name }}" data-version="{{ version }}" data-package-title="{{ title }}">
-      {% for file in files | sort %}
-        <a href="{{ tools_static(name, version, file) }}" class="resource" data-resource="{{ file }}">{{ file }}</a>{% if not loop.last %}, {% endif %}
-      {% endfor %}
+      <td><a href="{{ url_for('show_package_version', package=name, version=version) }}">{{ version }}</a></td>
+      <td class="package" {{ package_utils.print_package_data(version_content) }}>
+        {{ package_utils.print_files(version_content, tools_static) }}
+      </td>
+      <td><a href="{{ tools_static(name, version, license_file) }}"
+        title="License file">{{ license }}</a></td>
+    </tr>
+  {% endfor %}
+  {% endfor %}
+  <tobdy>
+</table>
+{% endif %}
+
+<h2>Fonts</h2>
+{% if not fonts %}
+  <p>At the moment no fonts are available.  This is probably an error.  If
+    this does not change within the next minutes, please open an issue on
+    GitHub.</p>
+{% else %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Library</th>
+      <th>Version</th>
+      <th>Fonts</th>
+      <th>License</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for (name, package_content) in fonts | dictsort %}
+  {% for (version, version_content) in package_content | dictsort %}
+    {% set title = version_content['title'] %}
+    {% set license = version_content['license'] %}
+    {% set license_file = version_content['license-file'] %}
+    {% set package_fonts = version_content['fonts'] %}
+    <tr>
+      {% if loop.first %}
+      <td rowspan="{{ package_content.keys() | length}}"><a href="{{ url_for('show_package', package=name) }}">{{ title }}</a></td>
+      {% endif %}
+      <td><a href="{{ url_for('show_package_version', package=name, version=version) }}">{{ version }}</a></td>
+      <td class="package" {{ package_utils.print_package_data(version_content) }}>
+        {{ package_utils.print_fonts(version_content, tools_static) }}
       </td>
       <td><a href="{{ tools_static(name, version, license_file) }}"
         title="License file">{{ license }}</a></td>
@@ -52,6 +90,5 @@
 {% endblock %}
 
 {% block page_bottom %}
-{% import '_package.html' as package_utils %}
 {{ package_utils.print_resource_dialog() }}
 {% endblock %}

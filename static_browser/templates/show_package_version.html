@@ -18,7 +18,7 @@
     <h4>Available files</h4>
     <ul class="package" data-package="{{ package['name'] }}" data-package-title="{{ package['title'] }}" data-version="{{ package['version'] }}">
       {% for file in all_files | sort %}
-      <li><a href="{{ tools_static(package['name'], package['version'], file) }}" class="resource{% if file in package['files'] %} resource-main{% endif %}" data-resource="{{ file }}">{{ file }}</a></li>
+      <li><a href="{{ tools_static(package['name'], package['version'], file) }}" class="resource resource-file{% if file in package['files'] %} resource-main{% endif %}" data-resource="{{ file }}">{{ file }}</a></li>
       {% endfor %}
     </ul>
   </div>

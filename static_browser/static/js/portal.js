@@ -8,13 +8,56 @@ $(function () {
 			package_title = parent_package.data('package-title'),
 			package_version = parent_package.data('version'),
 			filename = $(this).data('resource'),
-			url = '//tools.wmflabs.org/static/res/' + package_name + '/' + package_version + '/' + filename,
+			base_url = '//tools.wmflabs.org/static/res/' + package_name + '/' + package_version + '/',
+			url = base_url + filename,
 			snippet;
 
-		if (url.slice(-4) === '.css') {
-			snippet = '<link rel="stylesheet" href="' + url + '">';
-		} else if (url.slice(-3) === '.js') {
-			snippet = '<script src="' + url + '">';
+		if ($(this).hasClass('resource-file')) {
+			if (url.slice(-4) === '.css') {
+				snippet = '<link rel="stylesheet" href="' + url + '">';
+			} else if (url.slice(-3) === '.js') {
+				snippet = '<script src="' + url + '">';
+			} else {
+				return;
+			}
+		} else if ($(this).hasClass('resource-font-file')) {
+			var parent_font = $(this).parents('.resource-font'),
+				font_name = parent_font.data('font-name'),
+				font_eot_file = parent_font.find('.resource-font-file[data-font-type="eot"]').data('resource'),
+				font_svg_file = parent_font.find('.resource-font-file[data-font-type="svg"]').data('resource'),
+				font_ttf_file = parent_font.find('.resource-font-file[data-font-type="ttf"]').data('resource'),
+				font_woff_file = parent_font.find('.resource-font-file[data-font-type="woff"]').data('resource');
+			snippet = '@font-face {\n  font-family: \'' + font_name + '\';\n';
+			if (font_eot_file) {
+				snippet += '  src: url(\'' + base_url + font_eot_file + '\'); /* IE 5-8 */\n';
+				if (font_svg_file || font_ttf_file || font_woff_file) {
+					snippet += '  src: local(\'☺\'),             /* sneakily trick IE */\n';
+				}
+			} else {
+				snippet += '  src:\n';
+			}
+			if (font_woff_file) {
+				snippet += '    url(\'' + base_url + font_woff_file + '\') format(\'woff\')';
+				if (font_svg_file || font_ttf_file) {
+					snippet += ',';
+				} else {
+					snippet += ';';
+				}
+				snippet += '    /* FF 3.6, Chrome 5, IE9 */\n';
+			}
+			if (font_ttf_file) {
+				snippet += '    url(\'' + base_url + font_ttf_file + '\') format(\'truetype\')';
+				if (font_svg_file) {
+					snippet += ',';
+				} else {
+					snippet += ';';
+				}
+				snippet += ' /* Opera, Safari */\n';
+			}
+			if (font_svg_file) {
+				snippet += '    url(\'' + base_url + font_svg_file + '#font\') format(\'svg\');  /* iOS */\n';
+			}
+			snippet += '}'
 		} else {
 			return;
 		}
