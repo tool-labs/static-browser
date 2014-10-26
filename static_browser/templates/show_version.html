@@ -22,7 +22,7 @@
   <div class="col-md-6">
     <h4>Available files</h4>
     <ul>
-      {% for file in all_files %}
+      {% for file in all_files | sort %}
       <li><a href="{{ tools_static(package['name'], package['version'], file) }}" class="resource{% if file in package['files'] %} resource-main{% endif %}">{{ file }}</a></li>
       {% endfor %}
     </ul>
