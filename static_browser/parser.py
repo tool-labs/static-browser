@@ -44,6 +44,20 @@ class PackageParser:
                 self.logger.debug('   - not a directory')
         return versions
 
+    def get_all_files(self, package, version):
+        return self.get_all_files_in_dir(os.path.join(self.path, package, version))
+
+    def get_all_files_in_dir(self, directory, basepath=''):
+        files = []
+        for item in os.listdir(directory):
+            item_path = os.path.join(directory, item)
+            if os.path.isfile(item_path):
+                files.append(basepath + item)
+            elif os.path.isdir(item_path):
+                for file in self.get_all_files_in_dir(item_path, item + '/'):
+                    files.append(file)
+        return files
+
     def get_description_path(self, package, version):
         path = os.path.join(self.path, package)
         if version is not None:
@@ -68,6 +82,29 @@ class PackageParser:
         for key in PackageParser.REQUIRED_KEYS:
             valid = valid and key in description and description[key]
         return valid
+
+    def parse_package(self, package):
+        package_description = self.parse_description(package)
+        versions = []
+        for version in self.get_versions(package):
+            version_description = self.parse_description(package, version)
+            for key, value in package_description.iteritems():
+                version_description.setdefault(key, value)
+            if self.validate_description(version_description):
+                versions.append(version)
+        if versions:
+            package_description['versions'] = versions
+            return package_description
+        return None
+
+    def parse_version(self, package, version):
+        package_description = self.parse_description(package)
+        version_description = self.parse_description(package, version)
+        for key, value in package_description.iteritems():
+            version_description.setdefault(key, value)
+        if self.validate_description(version_description):
+            return version_description
+        return None
 
     def parse(self):
         result = dict()
@@ -141,6 +178,6 @@ class AccessLogParser:
         if match:
             (date_string, package, version, tool) = match.groups()
             date = datetime.datetime.strptime(date_string, AccessLogParser.DATE_FORMAT)
-            if date > self.pivot_date:
+            if not tool is 'static' and date > self.pivot_date:
                 return (package, version, tool)
         return None

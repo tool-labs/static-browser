@@ -33,10 +33,9 @@
     {% set files = version_content['files'] %}
     <tr>
       {% if loop.first %}
-      <td rowspan="{{ package_content.keys() | length}}"><a
-        href="{{ tools_static(name) }}">{{ title }}</a></td>
+      <td rowspan="{{ package_content.keys() | length}}"><a href="{{ url_for('show_package', package=name) }}">{{ title }}</a></td>
       {% endif %}
-      <td><a href="{{ tools_static(name, version ) }}">{{ version }}</a></td>
+      <td><a href="{{ url_for('show_version', package=name, version=version) }}">{{ version }}</a></td>
       <td>
       {% for file in files | sort %}
         <a href="{{ tools_static(name, version, file) }}"

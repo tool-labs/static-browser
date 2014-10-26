@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ package['title'] }} {{ package['version'] }}{% endblock %}
+{% block page_heading %}Package {{ package['title'] }} {{ package['version'] }}{% endblock %}
+
+{% block page_content %}
+<ol class="breadcrumb">
+  <li><a href="{{ url_for('index') }}">Home</a></li>
+  <li><a href="{{ url_for('show_package', package=package['name']) }}">{{ package['title'] }}</a></li>
+  <li class="active">{{ package['version'] }}</li>
+</ol>
+
+{% if description in package %}
+  <p>{{ package['description'] }}</p>
+{% else %}
+  <p>No description available for this package.</p>
+{% endif %}
+
+<p>License: <a href="{{ tools_static(package['name'], package['version'], package['license-file']) }}">{{ package['license'] }}</a>.</p>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4>Available files</h4>
+    <ul>
+      {% for file in all_files %}
+      <li><a href="{{ tools_static(package['name'], package['version'], file) }}" class="resource{% if file in package['files'] %} resource-main{% endif %}">{{ file }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="col-md-6">
+    <h4>Usage (30 days)</h4>
+    {% if access %}
+    <ul class="package-usage">
+      {% for (key, value) in access | dictsort() %}
+      <li><a href="//tools.wmflabs.org/{{ key }}">{{ key }}</a></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>No usage within the last 30 days.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

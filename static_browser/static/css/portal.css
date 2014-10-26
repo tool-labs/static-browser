@@ -4,10 +4,17 @@
     float: right;
 }
 
-/* Package table */
-.resource {
+/* Monospace */
+.resource,
+.package-usage li {
   font-family: 'Source Code Pro', 'DejaVu Sans Mono', 'Consolas', monospace;
 }
+
+/* Bold */
+.resource-main {
+  font-weight: bold;
+}
+
 /* Clipboard */
 
 .tooltip {

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block page_title %}{{ package['title'] }}{% endblock %}
+{% block page_heading %}Package {{ package['title'] }}{% endblock %}
+
+{% block page_content %}
+<ol class="breadcrumb">
+  <li><a href="{{ url_for('index') }}">Home</a></li>
+  <li class="active">{{ package['title'] }}</li>
+</ol>
+
+{% if description in package %}
+  <p>{{ package['description'] }}</p>
+{% else %}
+  <p>No description available for this package.</p>
+{% endif %}
+
+<h4>Available versions</h4>
+<ul>
+  {% for version in package['versions']: %}
+    <li><a href="{{ url_for('show_version', package=package['name'], version=version) }}">{{ version }}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
