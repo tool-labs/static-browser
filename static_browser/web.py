@@ -14,7 +14,7 @@ def before_request():
 @app.context_processor
 def context_processor_tools_static():
     def tools_static(package, version=None, file=None):
-        path = '//tools.wmflabs.org/static/res/{0}/'.format(package)
+        path = '//tools-static.wmflabs.org/static/{0}/'.format(package)
         if version:
             path += version + '/'
             if file:
