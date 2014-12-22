@@ -8,7 +8,7 @@ $(function () {
 			package_title = parent_package.data('package-title'),
 			package_version = parent_package.data('version'),
 			filename = $(this).data('resource'),
-			base_url = '//tools.wmflabs.org/static/res/' + package_name + '/' + package_version + '/',
+			base_url = '//tools-static.wmflabs.org/static/' + package_name + '/' + package_version + '/',
 			url = base_url + filename,
 			snippet;
 
